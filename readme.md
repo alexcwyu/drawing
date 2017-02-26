@@ -21,5 +21,5 @@ build the jar
 
 Run the app
 
-    java -Xss10m -jar app/build/libs/drawing-app-1.0.jar
+    java -Xss10m -jar app/build/libs/drawing-app-all-1.0.jar
 
