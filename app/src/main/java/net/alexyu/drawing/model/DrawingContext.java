@@ -7,15 +7,12 @@ import java.util.Optional;
  */
 public class DrawingContext {
 
-    public enum State {Running, Stop}
-
     private Canvas canvas;
     private State state;
 
     public DrawingContext() {
         state = State.Running;
     }
-
 
     public void updateCanvas(Canvas canvas) {
         this.canvas = canvas;
@@ -25,7 +22,6 @@ public class DrawingContext {
         return Optional.ofNullable(canvas);
     }
 
-
     public State getState() {
         return state;
     }
@@ -33,4 +29,6 @@ public class DrawingContext {
     public void setState(State state) {
         this.state = state;
     }
+
+    public enum State {Running, Stop}
 }

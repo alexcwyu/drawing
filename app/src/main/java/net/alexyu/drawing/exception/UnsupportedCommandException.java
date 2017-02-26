@@ -9,6 +9,7 @@ public class UnsupportedCommandException extends RuntimeException {
     public UnsupportedCommandException(String message) {
         super(message);
     }
+
     public UnsupportedCommandException(String message, Throwable t) {
         super(message, t);
     }

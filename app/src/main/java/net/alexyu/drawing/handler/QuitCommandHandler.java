@@ -21,8 +21,9 @@ public class QuitCommandHandler implements CommandHandler<QuitCommand> {
     @Override
     public void on(QuitCommand command) {
 
+        //TODO
+        //can save the context
 
         context.setState(DrawingContext.State.Stop);
-
     }
 }

@@ -5,10 +5,10 @@ package net.alexyu.drawing.exception;
  */
 public class CommandExecutionException extends RuntimeException {
 
-
     public CommandExecutionException(String message) {
         super(message);
     }
+
     public CommandExecutionException(String message, Throwable t) {
         super(message, t);
     }

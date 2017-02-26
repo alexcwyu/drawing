@@ -1,6 +1,5 @@
 package net.alexyu.drawing.model;
 
-import net.alexyu.drawing.exception.OutOfBoundsException;
 
 import java.util.Arrays;
 
@@ -30,23 +29,28 @@ public class Canvas {
 
     public String toString() {
         if (string == null) {
-//            char[] boundary = new char[width + 2];
-//            Arrays.fill(boundary, UL_BOUND);
-//            String bString = new String(boundary);
-//
-//            StringBuilder sb = new StringBuilder(bString);
-//            sb.append("\n");
-//
-//            Arrays.stream(matrix).forEach(seq -> sb.append(SIDE_BOUND).append(seq).append(SIDE_BOUND).append("\n"));
-//            sb.append(bString).append("\n");
-//            string = sb.toString();
-
             StringBuilder sb = new StringBuilder();
-            Arrays.stream(matrix).forEach(array -> sb.append(array).append("\n"));
+            Arrays.stream(matrix).forEach(array -> sb.append(array).append(NEW_LINE));
             string = sb.toString();
         }
 
         return string;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Canvas canvas = (Canvas) o;
+
+        return Arrays.deepEquals(matrix, canvas.matrix);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.deepHashCode(matrix);
     }
 
 
@@ -56,50 +60,66 @@ public class Canvas {
 
         private final char[][] matrix;
 
-        public Builder(char[][] matrix) {
-            assert (matrix == null || matrix.length == 0 || matrix[0].length == 0);
-            this.matrix = matrix;
-            this.height = matrix.length - 1;
-            this.width = matrix[0].length - 1;
+        public Builder(char[][] input) {
+            assert (input != null && input.length > 0 && input[0].length > 0);
+            this.matrix = clone(input);
+            this.height = input.length - 1;
+            this.width = input[0].length - 1;
         }
 
-        public void checkBound(int x, int y) {
-            if (x <= 0 || x > width)
-                throw new OutOfBoundsException();
-            if (y <= 0 || y >= height)
-                throw new OutOfBoundsException();
+        public static char[][] clone(char[][] input) {
+            char[][] result = new char[input.length][];
+            for (int i = 0; i < input.length; i++) {
+                result[i] = input[i].clone();
+            }
+            return result;
         }
-
-        public void updateCanvas(int x, int y, char value) {
-            checkBound(x, y);
-            matrix[y][x] = value;
-        }
-
-        public Canvas build() {
-            return new Canvas(this.matrix);
-        }
-
 
         public static Builder newBuilder(int width, int height) {
             return newBuilder(width, height, SPACE);
         }
 
         public static Builder newBuilder(int width, int height, char value) {
-            if (width <=0 || height <=0)
-                throw new OutOfBoundsException();
+            if (width <= 0 || height <= 0)
+                throw new IndexOutOfBoundsException(String.format("out of bound x=%s, y=%s", width, height));
 
             char[][] matrix = new char[height + 2][width + 2];
 
             Arrays.fill(matrix[0], UL_BOUND);
             for (int idx = 1; idx <= height; idx++) {
-                Arrays.fill(matrix[idx], 1, width+1, value);
-                matrix[idx][0] = '|';
-                matrix[idx][width+1] = '|';
+                Arrays.fill(matrix[idx], 1, width + 1, value);
+                matrix[idx][0] = SIDE_BOUND;
+                matrix[idx][width + 1] = SIDE_BOUND;
             }
             Arrays.fill(matrix[height + 1], UL_BOUND);
 
 
             return new Builder(matrix);
+        }
+
+
+        public boolean isInBound(Point pt) {
+            return (pt.x > 0 && pt.x < width && pt.y > 0 && pt.y < height);
+        }
+
+        public void checkBound(Point pt) {
+            if (!isInBound(pt))
+                throw new IndexOutOfBoundsException(String.format("out of bound x=%s, y=%s", pt.x, pt.y));
+        }
+
+        public void updateCanvas(Point pt, char value) {
+            checkBound(pt);
+            matrix[pt.y][pt.x] = value;
+        }
+
+
+        public char get(Point pt) {
+            checkBound(pt);
+            return matrix[pt.y][pt.x];
+        }
+
+        public Canvas build() {
+            return new Canvas(this.matrix);
         }
     }
 

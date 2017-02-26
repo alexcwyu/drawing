@@ -1,7 +1,27 @@
+
 dependencies {
 
     compile "com.google.guava:guava:21.0"
 
     compile "ch.qos.logback:logback-classic:1.1.3"
     compile "org.slf4j:log4j-over-slf4j:1.7.13"
+
+    testCompile "org.mockito:mockito-core:2.7.11"
+
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'net.alexyu.drawing.DrawingApp'
+    }
+    baseName rootProject.name+'-'+project.name
+}
+
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Main-Class': 'net.alexyu.drawing.DrawingApp'
+    }
+    baseName = rootProject.name+'-'+project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
 }

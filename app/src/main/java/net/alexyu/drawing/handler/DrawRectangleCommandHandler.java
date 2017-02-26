@@ -9,6 +9,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.stream.IntStream;
 
+import static net.alexyu.drawing.model.Point.newPoint;
+
 /**
  * Created by alex on 2/26/17.
  */
@@ -30,13 +32,17 @@ public class DrawRectangleCommandHandler implements CommandHandler<DrawRectangle
 
         Canvas.Builder builder = context.getCanvas().get().toBuilder();
 
-        IntStream.range(command.x1, command.x2 + 1).forEach(x -> builder.updateCanvas(x, command.y1, Canvas.LINE));
-        IntStream.range(Math.min(command.y1, command.y2) + 1, Math.max(command.y1, command.y2)).forEach(y -> {
-            builder.updateCanvas(command.x1, y, Canvas.LINE);
-            builder.updateCanvas(command.x2, y, Canvas.LINE);
-        });
+        IntStream.range(Math.min(command.point1.x, command.point2.x), Math.max(command.point1.x, command.point2.x) + 1)
+                .forEach(x -> builder.updateCanvas(newPoint(x, command.point1.y), Canvas.LINE));
 
-        IntStream.range(command.x1, command.x2 + 1).forEach(x -> builder.updateCanvas(x, command.y2, Canvas.LINE));
+        IntStream.range(Math.min(command.point1.y, command.point2.y) + 1, Math.max(command.point1.y, command.point2.y))
+                .forEach(y -> {
+                    builder.updateCanvas(newPoint(command.point1.x, y), Canvas.LINE);
+                    builder.updateCanvas(newPoint(command.point2.x, y), Canvas.LINE);
+                });
+
+        IntStream.range(Math.min(command.point1.x, command.point2.x), Math.max(command.point1.x, command.point2.x) + 1)
+                .forEach(x -> builder.updateCanvas(newPoint(x, command.point2.y), Canvas.LINE));
 
         context.updateCanvas(builder.build());
 

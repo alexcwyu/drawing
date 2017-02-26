@@ -13,13 +13,6 @@ public class CreateCanvasCommand implements Command {
     public final int height;
 
 
-    public static CreateCanvasCommand parse(String [] args){
-        assert (args.length == 2);
-        Integer.parseInt(args[1]);
-        Integer.parseInt(args[2]);
-        return new CreateCanvasCommand(Integer.parseInt(args[1]), Integer.parseInt(args[2]));
-    }
-
     public CreateCanvasCommand(int width, int height) {
         this.width = width;
         this.height = height;
@@ -45,22 +38,4 @@ public class CreateCanvasCommand implements Command {
         return String.format("%s %d %d", COMMAND, width, height);
     }
 
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        CreateCanvasCommand that = (CreateCanvasCommand) o;
-
-        if (width != that.width) return false;
-        return height == that.height;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = width;
-        result = 31 * result + height;
-        return result;
-    }
 }
